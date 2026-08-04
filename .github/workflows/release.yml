@@ -1,0 +1,93 @@
+name: Release v1.5
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: write
+
+jobs:
+  build-and-release:
+    runs-on: windows-latest
+    defaults:
+      run:
+        shell: powershell
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install Rust
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: x86_64-pc-windows-msvc
+
+      - name: Install npm dependencies
+        run: |
+          npm install
+          npm install --prefix src-ui
+
+      - name: Build frontend
+        run: npm run build:ui
+
+      - name: Build Tauri app
+        run: |
+          cd src-tauri
+          npx tauri build
+
+      - name: Get version from tag
+        id: get_version
+        run: |
+          $tag = "${{ github.ref_name }}"
+          $version = $tag.TrimStart('v')
+          echo "version=$version" >> $env:GITHUB_OUTPUT
+          echo "tag=$tag" >> $env:GITHUB_OUTPUT
+
+      - name: Find MSI
+        id: find_msi
+        run: |
+          $msi = Get-ChildItem -Path "src-tauri\target\release\bundle\msi\*.msi" -ErrorAction SilentlyContinue | Select-Object -First 1
+          if ($msi) {
+            echo "path=$($msi.FullName)" >> $env:GITHUB_OUTPUT
+            echo "name=$($msi.Name)" >> $env:GITHUB_OUTPUT
+          } else {
+            Write-Error "No MSI found in src-tauri\target\release\bundle\msi\"
+            exit 1
+          }
+
+      - name: Extract changelog for this version
+        id: changelog
+        run: |
+          $tag = "${{ github.ref_name }}"
+          $version = $tag.TrimStart('v')
+          $changelog = Get-Content -Path "CHANGELOG.md" -Raw
+          $pattern = "## v$([regex]::Escape($version)) (?:(?!## v)[\s\S])*?(?=\n## |\Z)"
+          $match = [regex]::Match($changelog, $pattern)
+          if ($match.Success) {
+            $body = $match.Value.Trim()
+            $body = $body -replace '^## .*\n', ''
+            echo "body<<EOF" >> $env:GITHUB_OUTPUT
+            echo "$body" >> $env:GITHUB_OUTPUT
+            echo "EOF" >> $env:GITHUB_OUTPUT
+          } else {
+            echo "body=Release $tag" >> $env:GITHUB_OUTPUT
+          }
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ github.ref_name }}
+          name: Horizon Tweaks ${{ github.ref_name }}
+          body: ${{ steps.changelog.outputs.body }}
+          files: |
+            ${{ steps.find_msi.outputs.path }}
+          draft: false
+          prerelease: false

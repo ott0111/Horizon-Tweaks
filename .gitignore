@@ -1,0 +1,125 @@
+# Dependencies
+node_modules/
+src-ui/node_modules/
+src-tauri/target/
+core-engine/build/
+
+# Environment variables
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# IDE and editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Build outputs
+dist/
+build/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+
+# Build outputs
+.next/
+website/.next/
+website/tsconfig.tsbuildinfo
+website/package-lock.json
+
+# Tauri specific
+src-tauri/target/
+src-tauri/*.rs.bk
+src-tauri/*.pdb
+src-tauri/debug/
+src-tauri/release/
+src-tauri/gen/
+src-tauri/signing-key.txt
+src-tauri/signing-key.txt.pub
+
+# Core engine
+core-engine/*.sln
+core-engine/*.vcxproj
+core-engine/*.vcxproj.filters
+core-engine/*.suo
+core-engine/*.user
+core-engine/*.aps
+core-engine/Debug/
+core-engine/Release/
+core-engine/x64/
+core-engine/Win32/
+
+# Data files (user-specific)
+PulsePlatform/
+data/*.json
+data/*.db
+data/*.sqlite
+
+# User-specific configurations
+*.user
+*.local
+*.cache
+
+# Temporary files
+*.tmp
+*.temp
+*.bak
+*.swp
+*~
+
+# OS files
+Thumbs.db
+.DS_Store
+desktop.ini
+
+# Distribution files
+*.exe
+*.msi
+*.zip
+*.tar.gz
+*.rar
+
+# Test coverage
+coverage/
+.nyc_output/
+
+# Rust specific
+Cargo.lock
+**/*.rs.bk
+target/
+**/target/
+
+# C++ specific
+*.sln
+*.vcxproj
+*.vcxproj.filters
+*.suo
+*.user
+*.aps
+Debug/
+Release/
+x64/
+Win32/
+
+# PowerShell scripts (optional - uncomment if you don't want to track them)
+# scripts/*.ps1
+
+# Deployment files
+deploy.bat
+deploy.sh
+
+# Documentation (optional - uncomment if you don't want to track them)
+# README.md
+# README-DEPLOYMENT.md
+
+crash_log.json
+
+# Stale compiled .js files in src-ui (use .tsx sources)
+src-ui/src/**/*.js

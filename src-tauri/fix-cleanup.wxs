@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+    <Fragment>
+        <DirectoryRef Id="INSTALLDIR">
+            <Component Id="SummitInstallDir" Guid="{E8B9B9D2-6C3F-5F4E-0B2D-9A7C6F5E4D3C}" Win64="yes">
+                <CreateFolder />
+                <RemoveFolder Id="RemoveSummitOnUninstall" On="uninstall" />
+                <RegistryKey Root="HKCU" Key="Software\Horizon Tweaks">
+                    <RegistryValue Name="install_path" Type="string" Value="[INSTALLDIR]" KeyPath="yes" />
+                </RegistryKey>
+            </Component>
+        </DirectoryRef>
+    </Fragment>
+</Wix>

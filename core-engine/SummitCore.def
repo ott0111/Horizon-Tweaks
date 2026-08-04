@@ -1,0 +1,15 @@
+LIBRARY SummitCore
+EXPORTS
+    Summit_Init
+    Summit_Shutdown
+    Summit_SetTimerResolution
+    Summit_ClearMemoryLists
+    Summit_AdjustProcessPriority
+    Summit_ApplyNetworkTweaks
+    Summit_ApplyMemoryTweaks
+    Summit_ApplyKernelTweaks
+    Summit_ReadRdtsc
+    Summit_CpuidVendor
+    Summit_SnapshotRegistryKey
+    Summit_RestoreRegistryKey
+    Summit_GetLastErrorMsg

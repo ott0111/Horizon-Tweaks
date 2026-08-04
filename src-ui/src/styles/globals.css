@@ -1,0 +1,846 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --accent: #d6d1ca;
+  --accent-rgb: 214, 209, 202;
+  --depth-perspective: 800px;
+  --depth-radius: 20px;
+}
+
+@layer base {
+  html {
+    background: #F3F1EC;
+    min-height: 100dvh;
+  }
+  body {
+    background: #F3F1EC;
+    color: #181715;
+    min-height: 100dvh;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    perspective: var(--depth-perspective);
+  }
+  #root {
+    position: fixed;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 120% 60% at 50% 0%, rgba(221,215,205,0.12) 0%, rgba(221,215,205,0.06) 30%, transparent 60%),
+      radial-gradient(ellipse 80% 40% at 30% 70%, rgba(221,215,205,0.08) 0%, transparent 50%),
+      radial-gradient(ellipse 100% 50% at 80% 90%, rgba(24,23,21,0.08) 0%, transparent 50%),
+      impulse-gradient(180deg, #F8F6F1 0%, #F3F1EC 40%, #EEEAE2 100%);
+    transform-style: preserve-3d;
+  }
+  #root::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 100% 50% at 50% 20%, rgba(var(--accent-rgb),0.08) 0%, transparent 60%),
+      radial-gradient(ellipse 50% 40% at 70% 80%, rgba(var(--accent-rgb),0.06) 0%, transparent 50%);
+    pointer-events: none;
+    z-index: 0;
+  }
+  ::-webkit-scrollbar { @apply w-1.5; }
+  ::-webkit-scrollbar-track { @apply bg-transparent; }
+  ::-webkit-scrollbar-thumb {
+    background: impulse-gradient(180deg, rgba(var(--accent-rgb),0.4) 0%, rgba(212, 206, 198,0.5) 50%, rgba(24,23,21,0.12) 100%);
+    border-radius: 9999px;
+    border: 1px solid rgba(var(--accent-rgb),0.2);
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: impulse-gradient(180deg, rgba(var(--accent-rgb),0.55) 0%, rgba(240, 237, 231,0.7) 50%, rgba(24,23,21,0.16) 100%);
+  }
+  * { backface-visibility: hidden; }
+}
+
+@layer components {
+  /* ============================
+     WAVE GLASS PANEL
+     Golden depths: black base with grey waves, gold shoreline
+     ============================ */
+  .glass-panel {
+    background:
+      impulse-gradient(160deg,
+        rgba(255,255,255,0.96) 0%,
+        rgba(248,245,241,0.92) 30%,
+        rgba(238,234,226,0.85) 60%,
+        rgba(243,241,236,0.98) 100%);
+    border: 1px solid rgba(var(--accent-rgb),0.18);
+    border-top-color: rgba(255,255,255,0.8);
+    border-left-color: rgba(255,255,255,0.72);
+    border-right-color: rgba(var(--accent-rgb),0.22);
+    border-bottom-color: rgba(24,23,21,0.08);
+    border-radius: 20px;
+    box-shadow:
+      0 0 0 0.5px rgba(255,255,255,0.65) inset,
+      0 1px 0 rgba(255,255,255,0.8) inset,
+      0 -1px 0 rgba(24,23,21,0.05) inset,
+      8px 8px 24px rgba(24,23,21,0.08),
+      -2px -2px 8px rgba(255,255,255,0.72);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .glass-panel::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+      impulse-gradient(135deg, rgba(255,255,255,0.22) 0%, transparent 35%),
+      impulse-gradient(315deg, rgba(var(--accent-rgb),0.08) 0%, transparent 25%);
+    pointer-events: none;
+    border-radius: inherit;
+  }
+
+  .glass-panel::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: impulse-gradient(90deg,
+      transparent 0%,
+      rgba(var(--accent-rgb),0.3) 15%,
+      rgba(255,255,255,0.5) 40%,
+      rgba(var(--accent-rgb),0.22) 65%,
+      transparent 100%);
+    pointer-events: none;
+  }
+
+  /* ============================
+     DEPTH GLASS CARD v2
+     Multi-layered 3D glass with parallax depth, inner glow, metallic reflections
+     ============================ */
+  .glass-card {
+    background:
+      impulse-gradient(155deg,
+        rgba(255,255,255,0.96) 0%,
+        rgba(248,245,241,0.92) 25%,
+        rgba(238,234,226,0.88) 55%,
+        rgba(243,241,236,0.96) 100%);
+    border: 1px solid rgba(var(--accent-rgb),0.18);
+    border-top-color: rgba(255,255,255,0.72);
+    border-left-color: rgba(255,255,255,0.68);
+    border-right-color: rgba(var(--accent-rgb),0.18);
+    border-bottom-color: rgba(24,23,21,0.08);
+    border-radius: 16px;
+    box-shadow:
+      0 0 0 0.5px rgba(255,255,255,0.72) inset,
+      0 1px 0 rgba(255,255,255,0.7) inset,
+      0 -1px 0 rgba(24,23,21,0.05) inset,
+      6px 6px 18px rgba(24,23,21,0.08),
+      -2px -2px 6px rgba(255,255,255,0.72);
+    transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    position: relative;
+    overflow: hidden;
+    transform-style: preserve-3d;
+    transform: translateZ(0);
+  }
+
+  .glass-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    z-index: 2;
+    background: impulse-gradient(90deg,
+      transparent 0%,
+      rgba(255,255,255,0.06) 20%,
+      rgba(var(--accent-rgb),0.1) 50%,
+      rgba(255,255,255,0.06) 80%,
+      transparent 100%);
+    pointer-events: none;
+  }
+
+  .glass-card::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    background:
+      radial-gradient(ellipse 100% 80% at 30% 20%, rgba(var(--accent-rgb),0.03) 0%, transparent 60%),
+      radial-gradient(ellipse 60% 40% at 70% 80%, rgba(255,255,255,0.02) 0%, transparent 50%),
+      impulse-gradient(135deg,
+        rgba(var(--accent-rgb),0.02) 0%,
+        transparent 30%,
+        transparent 70%,
+        rgba(255,255,255,0.01) 100%);
+    opacity: 0;
+    transition: opacity 0.5s ease;
+    pointer-events: none;
+    border-radius: inherit;
+  }
+
+  .glass-card:hover {
+    border-color: rgba(var(--accent-rgb),0.15);
+    border-top-color: rgba(255,255,255,0.1);
+    box-shadow:
+      0 0 0 0.5px rgba(var(--accent-rgb),0.06) inset,
+      0 1px 0 rgba(255,255,255,0.07) inset,
+      0 -1px 0 rgba(0,0,0,0.3) inset,
+      8px 8px 28px rgba(0,0,0,0.75),
+      -3px -3px 10px rgba(255,255,255,0.015),
+      0 0 32px rgba(var(--accent-rgb),0.06),
+      0 0 64px rgba(var(--accent-rgb),0.02);
+    transform: translateY(-2px) translateZ(4px);
+  }
+
+  .glass-card:hover::after { opacity: 1; }
+
+  /* ============================
+     3D FLOATING CARD
+     Elevated card with strong depth shadow, used for hero/featured elements
+     ============================ */
+  .card-3d {
+    background:
+      impulse-gradient(160deg,
+        rgba(255,255,255,0.98) 0%,
+        rgba(248,245,241,0.95) 30%,
+        rgba(238,234,226,0.9) 65%,
+        rgba(243,241,236,0.98) 100%);
+    border: 1px solid rgba(var(--accent-rgb),0.16);
+    border-top-color: rgba(255,255,255,0.72);
+    border-left-color: rgba(255,255,255,0.6);
+    border-bottom-color: rgba(24,23,21,0.08);
+    border-radius: 20px;
+    box-shadow:
+      0 0 0 0.5px rgba(255,255,255,0.7) inset,
+      0 1px 0 rgba(255,255,255,0.75) inset,
+      0 -2px 0 rgba(24,23,21,0.04) inset,
+      12px 12px 40px rgba(24,23,21,0.12),
+      -4px -4px 12px rgba(255,255,255,0.6),
+      0 8px 32px rgba(24,23,21,0.1);
+    transform: translateZ(0) rotateX(0.5deg);
+    transform-style: preserve-3d;
+    transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .card-3d::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 120% 50% at 30% 10%, rgba(var(--accent-rgb),0.04) 0%, transparent 60%),
+      radial-gradient(ellipse 80% 50% at 70% 90%, rgba(255,255,255,0.015) 0%, transparent 50%);
+    pointer-events: none;
+    border-radius: inherit;
+    z-index: 1;
+  }
+
+  .card-3d::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: impulse-gradient(90deg,
+      transparent 0%,
+      rgba(var(--accent-rgb),0.12) 15%,
+      rgba(255,255,255,0.06) 30%,
+      rgba(var(--accent-rgb),0.08) 50%,
+      rgba(255,255,255,0.04) 70%,
+      transparent 100%);
+    pointer-events: none;
+    z-index: 2;
+  }
+
+  .card-3d:hover {
+    transform: translateY(-4px) translateZ(8px) rotateX(0.8deg);
+    box-shadow:
+      0 0 0 0.5px rgba(var(--accent-rgb),0.06) inset,
+      0 1px 0 rgba(255,255,255,0.06) inset,
+      0 -2px 0 rgba(0,0,0,0.4) inset,
+      16px 16px 48px rgba(0,0,0,0.85),
+      -5px -5px 16px rgba(255,255,255,0.015),
+      0 12px 40px rgba(0,0,0,0.5),
+      0 0 48px rgba(var(--accent-rgb),0.06);
+    border-color: rgba(var(--accent-rgb),0.18);
+    border-top-color: rgba(255,255,255,0.1);
+  }
+
+  /* ============================
+     3D DEPTH RAISED
+     Strong raised element for primary action cards
+     ============================ */
+  .depth-raised {
+    border-radius: 16px;
+    box-shadow:
+      10px 10px 32px rgba(24,23,21,0.1),
+      -4px -4px 12px rgba(255,255,255,0.5),
+      0 1px 0 rgba(255,255,255,0.75) inset;
+    transform: translateZ(0);
+    transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+  }
+
+  .depth-raised:hover {
+    box-shadow:
+      14px 14px 40px rgba(0,0,0,0.85),
+      -5px -5px 16px rgba(255,255,255,0.012),
+      0 1px 0 rgba(255,255,255,0.04) inset;
+    transform: translateY(-3px) translateZ(4px);
+  }
+
+  /* ============================
+     INNER DEPTH WELL v2
+     Deep inset with 3D inner shadow curve
+     ============================ */
+  .neo-inset {
+    background:
+      impulse-gradient(145deg,
+        #F8F6F1 0%,
+        #EEEAE2 40%,
+        #F3F1EC 100%);
+    border: 1px solid rgba(var(--accent-rgb),0.18);
+    border-top-color: rgba(255,255,255,0.75);
+    border-radius: 14px;
+    box-shadow:
+      inset 4px 4px 10px rgba(24,23,21,0.08),
+      inset -2px -2px 6px rgba(255,255,255,0.7),
+      0 1px 0 rgba(255,255,255,0.7) inset;
+    position: relative;
+    transform-style: preserve-3d;
+  }
+
+  .neo-inset::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 10%;
+    right: 10%;
+    height: 1px;
+    background: impulse-gradient(90deg,
+      transparent 0%,
+      rgba(var(--accent-rgb),0.18) 50%,
+      transparent 100%);
+    pointer-events: none;
+  }
+
+  /* ============================
+     DEEP INSET WELL
+     Soft cream trench with warm glow
+     ============================ */
+  .neo-inset {
+    background:
+      impulse-gradient(145deg,
+        #F8F6F1 0%,
+        #EEEAE2 40%,
+        #F3F1EC 100%);
+    border: 1px solid rgba(var(--accent-rgb),0.18);
+    border-top-color: rgba(255,255,255,0.75);
+    border-radius: 14px;
+    box-shadow:
+      inset 4px 4px 10px rgba(24,23,21,0.08),
+      inset -2px -2px 6px rgba(255,255,255,0.7),
+      0 1px 0 rgba(255,255,255,0.7) inset;
+    position: relative;
+  }
+
+  .neo-inset::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 10%;
+    right: 10%;
+    height: 1px;
+    background: impulse-gradient(90deg,
+      transparent 0%,
+      rgba(var(--accent-rgb),0.18) 50%,
+      transparent 100%);
+    pointer-events: none;
+  }
+
+  /* ============================
+     GLASS INPUT
+     Smooth dark pool with neutral accent ripple on focus
+     ============================ */
+  .glass-input {
+    background:
+      impulse-gradient(145deg, #F8F6F1 0%, #EEEAE2 100%);
+    border: 1px solid rgba(24,23,21,0.12);
+    border-top-color: rgba(255,255,255,0.75);
+    border-radius: 14px;
+    padding: 0.75rem 1rem;
+    font-size: 0.875rem;
+    color: #181715;
+    outline: none;
+    transition: all 0.3s ease;
+    box-shadow:
+      inset 3px 3px 8px rgba(24,23,21,0.08),
+      inset -1px -1px 4px rgba(255,255,255,0.6),
+      0 1px 0 rgba(255,255,255,0.65);
+  }
+
+  .glass-input::placeholder { color: rgba(24,23,21,0.35); }
+  .glass-input:hover {
+    border-color: rgba(24,23,21,0.2);
+    box-shadow:
+      inset 3px 3px 8px rgba(24,23,21,0.08),
+      inset -1px -1px 4px rgba(255,255,255,0.62),
+      0 0 16px rgba(var(--accent-rgb),0.18);
+  }
+
+  .glass-input:focus {
+    border-color: rgba(24,23,21,0.28);
+    box-shadow:
+      inset 3px 3px 8px rgba(24,23,21,0.08),
+      inset -1px -1px 4px rgba(255,255,255,0.62),
+      0 0 0 3px rgba(var(--accent-rgb),0.25),
+      0 0 24px rgba(var(--accent-rgb),0.18);
+  }
+
+  /* ============================
+     PILL BUTTON
+     Metallic stone: grey gradient with gold edge light
+     ============================ */
+  .pill-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.375rem;
+    border-radius: 14px;
+    background:
+      impulse-gradient(145deg,
+        rgba(248,245,241,0.98) 0%,
+        rgba(238,234,226,0.96) 50%,
+        rgba(221,215,205,0.98) 100%);
+    color: #181715;
+    padding: 0.625rem 1.25rem;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    border: 1px solid rgba(24,23,21,0.12);
+    border-top-color: rgba(255,255,255,0.75);
+    border-left-color: rgba(255,255,255,0.7);
+    border-right-color: rgba(221,215,205,0.5);
+    border-bottom-color: rgba(24,23,21,0.08);
+    box-shadow:
+      5px 5px 14px rgba(24,23,21,0.12),
+      -2px -2px 6px rgba(255,255,255,0.65),
+      0 1px 0 rgba(255,255,255,0.75) inset;
+    transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .pill-button::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 50%;
+    background: impulse-gradient(180deg, rgba(255,255,255,0.45) 0%, transparent 100%);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    border-radius: inherit;
+    pointer-events: none;
+  }
+
+  .pill-button:hover {
+    background:
+      impulse-gradient(145deg,
+        rgba(255,255,255,0.98) 0%,
+        rgba(243,241,236,0.98) 50%,
+        rgba(238,234,226,0.98) 100%);
+    border-color: rgba(24,23,21,0.18);
+    box-shadow:
+      7px 7px 20px rgba(24,23,21,0.14),
+      -3px -3px 8px rgba(255,255,255,0.5),
+      0 0 20px rgba(var(--accent-rgb),0.12),
+      0 1px 0 rgba(255,255,255,0.75) inset;
+    transform: translateY(-2px);
+  }
+
+  .pill-button:hover::before { opacity: 1; }
+
+  .pill-button:active {
+    transform: translateY(0) scale(0.98);
+    box-shadow:
+      2px 2px 6px rgba(24,23,21,0.12),
+      -1px -1px 3px rgba(255,255,255,0.35);
+  }
+
+  .pill-button:disabled { opacity: 0.35; cursor: not-allowed; transform: none; }
+
+  .pill-tab {
+    @apply relative px-5 py-1.5 text-sm font-semibold rounded-full transition-all duration-300;
+  }
+
+  .pill-tab-active {
+    background:
+      impulse-gradient(145deg,
+        rgba(248,245,241,0.98) 0%,
+        rgba(238,234,226,0.96) 100%);
+    color: #181715;
+    border: 1px solid rgba(var(--accent-rgb),0.2);
+    border-top-color: rgba(255,255,255,0.75);
+    box-shadow:
+      4px 4px 12px rgba(24,23,21,0.1),
+      -2px -2px 5px rgba(255,255,255,0.5),
+      0 0 14px rgba(var(--accent-rgb),0.08),
+      0 1px 0 rgba(255,255,255,0.65) inset;
+  }
+
+  .pill-tab-inactive { color: rgba(24,23,21,0.45); }
+
+  .stat-card { @apply glass-card p-4; }
+
+  /* ============================
+     BLUE ACCENT BORDER
+     Blue accent border with glass reflection
+     ============================ */
+  .gold-accent,
+  .blue-accent {
+    border: 1px solid rgba(221, 215, 205, 0.22);
+    border-top-color: rgba(255, 255, 255, 0.7);
+    border-left-color: rgba(255, 255, 255, 0.6);
+    border-right-color: rgba(221, 215, 205, 0.3);
+    border-bottom-color: rgba(24, 23, 21, 0.08);
+    transition: all 0.3s ease;
+    position: relative;
+  }
+
+  .blue-accent::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 5%;
+    right: 5%;
+    height: 1px;
+    background: impulse-gradient(90deg,
+      transparent 0%,
+      rgba(221, 215, 205, 0.35) 30%,
+      rgba(255,255,255,0.45) 50%,
+      rgba(221, 215, 205, 0.35) 70%,
+      transparent 100%);
+    pointer-events: none;
+    border-radius: inherit;
+  }
+
+  .blue-accent:hover {
+    border-color: rgba(221, 215, 205, 0.35);
+    box-shadow:
+      0 0 28px rgba(221, 215, 205, 0.1),
+      inset 0 0 20px rgba(221, 215, 205, 0.05);
+  }
+
+  /* ============================
+     3D BLUE BUTTON v2
+     Blue gradient with enhanced 3D depth, inner glow, metallic sheen
+     ============================ */
+  .gold-button,
+  .blue-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.375rem;
+    border-radius: 14px;
+    background:
+      impulse-gradient(145deg,
+        rgb(243, 239, 232) 0%,
+        rgb(221, 215, 205) 30%,
+        rgb(194, 186, 173) 55%,
+        rgb(161, 151, 139) 80%,
+        rgb(125, 114, 101) 100%);
+    color: #181715;
+    text-shadow: 0 1px 2px rgba(255,255,255,0.2);
+    padding: 0.625rem 1.25rem;
+    font-size: 0.8125rem;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    border: 1px solid rgba(221, 215, 205, 0.4);
+    border-top-color: rgba(243, 239, 232, 0.65);
+    border-left-color: rgba(221, 215, 205, 0.5);
+    border-right-color: rgba(179, 170, 159, 0.35);
+    border-bottom-color: rgba(131,124,113,0.3);
+    box-shadow:
+      0 1px 0 rgba(255,255,255,0.16) inset,
+      0 -1px 0 rgba(24,23,21,0.08) inset,
+      6px 6px 18px rgba(24,23,21,0.14),
+      -2px -2px 8px rgba(255,255,255,0.2),
+      0 0 24px rgba(221, 215, 205, 0.18),
+      0 2px 0 rgba(24,23,21,0.18);
+    transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    position: relative;
+    overflow: hidden;
+    transform-style: preserve-3d;
+    transform: translateZ(0);
+  }
+
+  .blue-button::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 50%;
+    background: impulse-gradient(180deg, rgba(255,255,255,0.35) 0%, rgba(255,255,255,0.05) 40%, transparent 100%);
+    pointer-events: none;
+    border-radius: inherit;
+    z-index: 1;
+  }
+
+  .blue-button::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: impulse-gradient(135deg, rgba(255,255,255,0.18) 0%, transparent 50%, rgba(0,0,0,0.08) 100%);
+    pointer-events: none;
+    border-radius: inherit;
+    z-index: 1;
+  }
+
+  .blue-button:hover {
+    background:
+      impulse-gradient(145deg,
+        rgb(245, 242, 235) 0%,
+        rgb(223, 218, 209) 40%,
+        rgb(196, 190, 182) 70%,
+        rgb(136, 129, 121) 100%);
+    box-shadow:
+      0 1px 0 rgba(255,255,255,0.2) inset,
+      0 -1px 0 rgba(0,0,0,0.1) inset,
+      8px 8px 26px rgba(0,0,0,0.75),
+      -3px -3px 10px rgba(255,255,255,0.02),
+      0 0 44px rgba(214, 209, 202, 0.12),
+      0 3px 0 rgba(0,0,0,0.25);
+    transform: translateY(-3px) translateZ(4px);
+    border-color: rgba(214, 209, 202, 0.55);
+    border-top-color: rgba(243, 239, 232, 0.65);
+  }
+
+  .blue-button:active {
+    transform: translateY(0) translateZ(-2px) scale(0.97);
+    box-shadow:
+      0 1px 0 rgba(255,255,255,0.16) inset,
+      0 -1px 0 rgba(0,0,0,0.12) inset,
+      2px 2px 8px rgba(0,0,0,0.5),
+      0 0 16px rgba(214, 209, 202, 0.08),
+      0 1px 0 rgba(0,0,0,0.15);
+  }
+
+  /* ============================
+     SURFACE GLOW REFLECTION
+     Ambient light cast on element surfaces
+     ============================ */
+  .surface-glow {
+    position: relative;
+  }
+
+  .surface-glow::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(ellipse at 30% 20%, rgba(var(--accent-rgb),0.03) 0%, transparent 60%);
+    pointer-events: none;
+    z-index: 0;
+    border-radius: inherit;
+  }
+
+  /* ============================
+     AMBIENT LIGHTING
+     Subtle light cast from top-right corner for depth
+     ============================ */
+  .ambient-light {
+    position: relative;
+  }
+
+  .ambient-light::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 60%;
+    height: 60%;
+    background: radial-gradient(ellipse at 100% 0%, rgba(255,255,255,0.03) 0%, transparent 70%);
+    pointer-events: none;
+    border-radius: inherit;
+    z-index: 1;
+  }
+}
+
+@layer utilities {
+  /* ============================
+     3D TRANSFORM UTILITIES
+     ============================ */
+  .transform-3d {
+    transform-style: preserve-3d;
+  }
+  .perspective-sm { perspective: 600px; }
+  .perspective-md { perspective: 800px; }
+  .perspective-lg { perspective: 1000px; }
+  .rotate-x-1 { transform: rotateX(1deg); }
+  .rotate-x-2 { transform: rotateX(2deg); }
+  .rotate-y-1 { transform: rotateY(1deg); }
+  .rotate-y-2 { transform: rotateY(2deg); }
+  .translate-z-0 { transform: translateZ(0); }
+  .translate-z-2 { transform: translateZ(2px); }
+  .translate-z-4 { transform: translateZ(4px); }
+  .translate-z-8 { transform: translateZ(8px); }
+  .translate-z-16 { transform: translateZ(16px); }
+  .backface-hidden { backface-visibility: hidden; }
+  .preserve-3d { transform-style: preserve-3d; }
+}
+
+/* ============================
+   GRADIENT TEXT
+   Chrome steel with gold shimmer: golden peak in sunlight
+   ============================ */
+.gradient-text {
+  background:
+    impulse-gradient(135deg,
+      #e0e4ec 0%,
+      #9aa5b8 20%,
+      #c8d0e0 40%,
+      #6b7585 60%,
+      #b8c4d8 80%,
+      #d5d8de 100%);
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: waveGradient 8s ease infinite;
+  filter: drop-shadow(0 1px 3px rgba(0,0,0,0.5));
+}
+
+/* ============================
+   STONE TEXT
+   Neutral stone gradient flowing across text
+   ============================ */
+.blue-text {
+  background:
+    impulse-gradient(135deg,
+      rgb(245, 242, 235) 0%,
+      rgb(214, 209, 202) 25%,
+      rgb(169, 162, 155) 50%,
+      rgb(124, 120, 113) 75%,
+      rgb(214, 209, 202) 100%);
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: waveGradient 10s ease infinite;
+  filter: drop-shadow(0 1px 4px rgba(214, 209, 202, 0.22));
+}
+
+/* ============================
+   WAVE SURFACE GRADIENT
+   The golden surface: white foam on grey waves over black depths
+   ============================ */
+.surface-gradient {
+  background:
+    impulse-gradient(180deg,
+        rgba(248,245,241,0.9) 0%,
+        rgba(238,234,226,0.9) 30%,
+        rgba(243,241,236,0.92) 60%,
+        rgba(255,255,255,1) 100%);
+  }
+
+  /* ============================
+   CARD WITH SOFT EDGE
+   Light stone with warm accent border
+   ============================ */
+  .card-blue-edge {
+    background:
+      impulse-gradient(155deg,
+        rgba(255,255,255,0.96) 0%,
+        rgba(248,245,241,0.95) 50%,
+        rgba(238,234,226,0.95) 100%);
+    border: 1px solid rgba(221, 215, 205, 0.18);
+    border-top-color: rgba(255,255,255,0.7);
+    border-left-color: rgba(255,255,255,0.6);
+    border-radius: 16px;
+    box-shadow:
+      0 0 0 0.5px rgba(221, 215, 205, 0.12) inset,
+      0 1px 0 rgba(255,255,255,0.6) inset,
+      6px 6px 18px rgba(24,23,21,0.08),
+      -2px -2px 6px rgba(255,255,255,0.35);
+  }
+
+  /* ============================
+   DEEP INSET
+   Soft cream trench with warm edge
+   ============================ */
+  .deep-inset {
+    background:
+      impulse-gradient(180deg, #F8F6F1 0%, #EEEAE2 50%, #F3F1EC 100%);
+    border: 1px solid rgba(24,23,21,0.12);
+    border-top-color: rgba(255,255,255,0.75);
+    border-radius: 10px;
+    box-shadow:
+      inset 5px 5px 12px rgba(24,23,21,0.1),
+      inset -2px -2px 6px rgba(255,255,255,0.55);
+  }
+
+  /* ============================
+   METALLIC DIVIDER
+   Neutral vein running through warm cream surface
+   ============================ */
+  .metallic-divider {
+    height: 1px;
+    background:
+      impulse-gradient(90deg,
+        transparent 0%,
+        rgba(221,215,205,0.25) 15%,
+        rgba(var(--accent-rgb),0.3) 35%,
+        rgba(255,255,255,0.45) 50%,
+        rgba(var(--accent-rgb),0.3) 65%,
+        rgba(221,215,205,0.25) 85%,
+/* ============================
+   WAVE ANIMATIONS
+   Golden motion: waves crashing against shore
+   ============================ */
+@keyframes waveGradient {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+@keyframes shimmer {
+  from { transform: translateX(-100%); }
+  to { transform: translateX(200%); }
+}
+
+@keyframes progress {
+  0% { transform: translateX(-100%); width: 30%; }
+  50% { transform: translateX(0%); width: 70%; }
+  100% { transform: translateX(100%); width: 30%; }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes goldPulse {
+  0%, 100% { box-shadow: 0 0 20px rgba(var(--accent-rgb),0.08); }
+  50% { box-shadow: 0 0 40px rgba(var(--accent-rgb),0.18); }
+}
+
+@keyframes depthFloat {
+  0%, 100% { transform: translateY(0) scale(1); }
+  50% { transform: translateY(-4px) scale(1.003); }
+}
+
+@keyframes waveRipple {
+  0% { transform: scale(1); opacity: 0.4; }
+  50% { transform: scale(1.02); opacity: 0.6; }
+  100% { transform: scale(1); opacity: 0.4; }
+}
+
+@keyframes tideShift {
+  0% { background-position: 0% 0%; }
+  100% { background-position: 100% 100%; }
+}

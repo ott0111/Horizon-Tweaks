@@ -1,0 +1,140 @@
+name: Build MSI Installer
+
+on:
+  push:
+    branches: [main]
+    tags: ["v*"]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+    inputs:
+      create_release:
+        description: 'Create a GitHub release (requires release_tag below)'
+        required: false
+        type: boolean
+        default: false
+      release_tag:
+        description: 'Tag name for the release (e.g., v1.3.0). Only used if create_release is checked.'
+        required: false
+        type: string
+        default: ''
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  CARGO_TERM_COLOR: always
+  RUST_BACKTRACE: 1
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Rust
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: x86_64-pc-windows-msvc
+
+      - name: Rust cache
+        uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: src-tauri
+          key: ${{ runner.os }}-tauri-${{ hashFiles('src-tauri/Cargo.lock') }}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: "npm"
+          cache-dependency-path: src-ui/package-lock.json
+
+      - name: Install frontend dependencies
+        working-directory: src-ui
+        run: npm ci
+
+      - name: Build frontend
+        working-directory: src-ui
+        run: npm run build
+
+      - name: Install Tauri CLI
+        run: cargo install tauri-cli --version "^2.0"
+
+      - name: Build Tauri app (MSI)
+        working-directory: src-tauri
+        run: cargo tauri build --bundles msi
+        env:
+          TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}
+          TAURI_SIGNING_PRIVATE_KEY_PASSWORD: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY_PASSWORD }}
+
+      - name: Upload MSI artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: Impulse-Tweaks-x64
+          path: src-tauri/target/release/bundle/msi/*.msi
+          if-no-files-found: error
+
+      - name: Upload portable exe
+        uses: actions/upload-artifact@v4
+        with:
+          name: Impulse-Tweaks-x64-Portable
+          path: src-tauri/target/release/Impulse*.exe
+          if-no-files-found: warn
+
+  release:
+    if: |
+      startsWith(github.ref, 'refs/tags/v') ||
+      (github.event_name == 'workflow_dispatch' &&
+       inputs.create_release == 'true' &&
+       inputs.release_tag != '')
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Determine release tag
+        id: release_info
+        run: |
+          if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
+            echo "tag=${{ inputs.release_tag }}" >> $GITHUB_OUTPUT
+          else
+            echo "tag=${{ github.ref_name }}" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Download MSI artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: Impulse-Tweaks-x64
+
+      - name: Download portable exe
+        uses: actions/download-artifact@v4
+        with:
+          name: Impulse-Tweaks-x64-Portable
+
+      - name: Create release notes
+        run: |
+          # Extract the latest version section from CHANGELOG.md
+          awk '/^## v[0-9]/{if(p)exit; p=1} p{print}' CHANGELOG.md | sed '/^---$/d' > RELEASE_BODY.md
+          echo "--- Release Notes ---"
+          cat RELEASE_BODY.md
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          name: Horizon Tweaks ${{ steps.release_info.outputs.tag }}
+          tag_name: ${{ steps.release_info.outputs.tag }}
+          body_path: RELEASE_BODY.md
+          draft: false
+          prerelease: false
+          files: |
+            *.msi
+            *.exe
+          generate_release_notes: false

@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="en" class="dark" style="background-color:#14161a;margin:0;padding:0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Horizon Tweaks</title>
+    <link rel="icon" type="image/x-icon" href="/app-icon.ico">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&family=Space+Grotesk:wght@400;500;600;700&family=Outfit:wght@500;600;700;800;900&display=swap" rel="stylesheet">
+    <script>
+      // Restore saved locale before React boots to prevent flash of wrong language
+      (function() {
+        var locale = localStorage.getItem('app-locale');
+        var dir = localStorage.getItem('app-locale-dir');
+        if (locale) document.documentElement.lang = locale;
+        if (dir) document.documentElement.dir = dir;
+      })();
+    </script>
+  </head>
+  <body class="bg-surface-950 text-steel-200 antialiased" style="background-color:#14161a;margin:0;padding:0;overflow:hidden">
+    <div id="root" style="position:fixed;inset:0;background-color:#14161a"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

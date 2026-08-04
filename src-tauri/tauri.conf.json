@@ -1,0 +1,42 @@
+{
+  "productName": "Horizon Tweaks",
+  "version": "1.5.2",
+  "identifier": "com.horizon.tweaks",
+  "build": {
+    "frontendDist": "../src-ui/dist",
+    "devUrl": "http://localhost:5173"
+  },
+  "app": {
+    "windows": [
+      {
+        "title": "Horizon Tweaks",
+        "width": 1400,
+        "height": 900,
+        "minWidth": 1000,
+        "minHeight": 700,
+        "decorations": false,
+        "transparent": false,
+        "center": true
+      }
+    ],
+    "security": {
+      "csp": null
+    }
+  },
+  "bundle": {
+    "active": true,
+    "targets": "msi",
+    "icon": [
+      "icons/icon.ico",
+      "icons/icon.png"
+    ],
+    "resources": [
+      "firebase_config.json"
+    ],
+    "windows": {
+      "wix": {
+        "fragmentPaths": ["fix-cleanup.wxs"]
+      }
+    }
+  }
+}

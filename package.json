@@ -1,0 +1,16 @@
+{
+  "name": "horizon-tweaks",
+  "version": "1.5.2",
+  "private": true,
+  "scripts": {
+    "install:all": "npm install && npm install --prefix src-ui",
+    "dev:ui": "npm run dev --prefix src-ui",
+    "dev:tauri": "cd src-tauri && npx tauri dev",
+    "build:ui": "npm run build --prefix src-ui",
+    "build": "npm run build:ui && cd src-tauri && npx tauri build",
+    "start": "npm run install:all && npm run dev:tauri"
+  },
+  "devDependencies": {
+    "@tauri-apps/cli": "^2.0.0"
+  }
+}
