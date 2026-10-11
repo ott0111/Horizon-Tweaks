@@ -51,7 +51,7 @@ export default function Header({ user, cartTier, onShowLogin, onLogout, onOpenCa
             <Link href="/" className="flex items-center gap-2.5 group">
               <img src="/app-icon.png" alt="Horizon Tweaks" className="size-7" />
               <span className="font-display font-bold text-[15px] text-white tracking-tight">
-                Impulse<span className="text-stone-300 font-normal italic">Tweaks</span>
+                Horizon <span className="text-stone-300 font-normal italic">Tweaks</span>
               </span>
             </Link>
 
